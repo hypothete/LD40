@@ -13,7 +13,10 @@ T -2.5 hours:
 Lighting, and incorporated GIF recording into the warmup project. Starting to get the hang of adding uniforms and attributes.
 
 T +1 hour:
-Brainstorming on the theme: "The more you have, the worse it gets." Since I want to work with AR or face tracking, my ideas mostly revolve around things in view of a webcam. Tribbles piling up. Something cooperative with multiple people's faces in a frame. Facebook profile filters. Snapchat filters that get rated for style points. 
+Brainstorming on the theme: "The more you have, the worse it gets." Since I want to work with AR or face tracking, my ideas mostly revolve around things in view of a webcam. Tribbles piling up. Something cooperative with multiple people's faces in a frame. Facebook profile filters. Snapchat filters that get rated for style points.
 
 T +2.5 hours:
 Spent 45 minutes futzing with webpack + webgazer.js. Webgazer is built out of a bunch of window-dependent IIFEs that apparently disagree with Webpack + Babel. Moving on to a more plain setup so as not to waste time.
+
+T +5 hours:
+I've invested in tracking.js, and have succeeded in identifying a user's left and right eyes. This will allow me to determine the angle and size of the player's face. 
