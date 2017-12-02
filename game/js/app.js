@@ -1,7 +1,10 @@
 var canvas = document.querySelector('#canvas');
 var ctx = canvas.getContext('2d');
 var tracker = new tracking.ObjectTracker(['eye']);
-var leftEye, rightEye;
+var leftEye,
+  rightEye,
+  midbrow = { x: 0, y: 0, a: 0 },
+  mouth = { x: 0, y: 0 };
 
 var eyeImg = new Image();
 eyeImg.src = 'eye.png';
@@ -29,19 +32,26 @@ tracker.on('track', function(event) {
     }
     leftEye.color = 'red';
     rightEye.color = 'green';
-
+    midbrow.x = rightEye.x + rightEye.width - (rightEye.x + rightEye.width - leftEye.x)/2;
+    midbrow.y = rightEye.y + rightEye.height - (rightEye.y + rightEye.height - leftEye.y)/2;
+    eyedist = dist(leftEye, rightEye);
+    midbrow.a = Math.atan2(
+      rightEye.y - leftEye.y,
+      rightEye.x - leftEye.x + leftEye.width/2
+    ) + Math.PI/2;
+    mouth.x = midbrow.x+Math.cos(midbrow.a)*eyedist*1.168;
+    mouth.y = midbrow.y+Math.sin(midbrow.a)*eyedist*1.168;
   }
 });
 
 function animate () {
   requestAnimationFrame(animate);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawRects([leftEye, rightEye]);
+  drawFace();
 }
 
 function drawRects (rects) {
   //ctx.strokeStyle = 'red';
-
   rects.forEach((rect) => {
     //ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
     if (!rect) return;
@@ -51,6 +61,27 @@ function drawRects (rects) {
       ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
     }
   });
+}
+
+function drawFace () {
+  if (!leftEye || !rightEye) return;
+  ctx.fillStyle = 'red';
+  ctx.fillRect(leftEye.x, leftEye.y, leftEye.width, leftEye.height);
+  ctx.fillStyle = 'green';
+  ctx.fillRect(rightEye.x, rightEye.y, rightEye.width, rightEye.height);
+  ctx.fillStyle = 'blue';
+  ctx.fillRect(midbrow.x-4, midbrow.y-4, 8,8);
+  ctx.strokeStyle = 'blue';
+  ctx.beginPath();
+  ctx.moveTo(midbrow.x,midbrow.y);
+  ctx.lineTo(mouth.x,mouth.y);
+  ctx.stroke();
+  ctx.save();
+  ctx.translate(mouth.x,mouth.y);
+  ctx.rotate(midbrow.a+Math.PI/2);
+  ctx.fillStyle = 'yellow';
+  ctx.fillRect(-20,-5,40,10);
+  ctx.restore();
 }
 
 
@@ -70,4 +101,8 @@ function findEyePair (rects) {
     }
   }
   return { count: rectParallelTally.length, tally: rectParallelTally};
+}
+
+function dist (a, b) {
+  return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
 }
