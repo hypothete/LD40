@@ -29,3 +29,9 @@ Out of coffee
 
 T +14 hours:
 Got coffee. Starting to think about incorporating webGL.
+
+T +18 hours:
+Successfully projecting from the canvas positions to move and rotate the 3D mask. Going to work on overlays next. Still need to figure out mask distance based on eye distance.
+
+T +19 hours:
+Figured out z depth. Spent a lot of time reading up on the rule of similar triangles. Only thing that makes me hesitant about this is figuring out FOV of the average user's webcam. Just guessing at 90 degrees for now.

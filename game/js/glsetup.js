@@ -32,7 +32,7 @@ const fsSource = `
 `;
 
 const camera = {
-  fov: 45 * Math.PI/ 180,
+  fov: 90 * Math.PI/ 180,
   ar: glcan.clientWidth / glcan.clientHeight,
   near: 1.0,
   far: 1000.0,

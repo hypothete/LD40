@@ -41,7 +41,7 @@ fetch(new Request('./models/faceplane.obj'))
   mask = makeModel(new OBJ.Mesh(objText));
   scene.push(mask);
   OBJ.initMeshBuffers(gl, mask.mesh);
-  vec3.set(mask.translation, 0, 0, -5);
+  vec3.set(mask.translation, 0, 0, -2);
   animate();
 });
 
@@ -122,14 +122,19 @@ function findEyePair (rects) {
 }
 
 function updateMaskPosition () {
-  let nx = (midbrow.x - canvas.width/2) / (canvas.width/2);
-  let ny = (midbrow.y - canvas.height/2) / (canvas.height/2);
-  let z = mask.translation[2];
   let hov = camera.fov * camera.ar;
-  let xoff = (z * nx);
-  let yoff = (z * ny);
-  mask.translation[0] = xoff;
-  mask.translation[1] = yoff;
+  let zcam = (canvas.width/2) * Math.atan(hov/2);
+  let eyedist = dist({ x: leftEye.x, y: leftEye.y }, { x: rightEye.x + rightEye.width, y: rightEye.y });
+
+  mask.translation[2] = -zcam / (eyedist);
+  let z = mask.translation[2];
+
+  let dnx = (midbrow.x - canvas.width/2) * z / zcam;
+  let dny = (midbrow.y - canvas.height/2) * z / zcam;
+
+  mask.translation[0] = dnx;
+  mask.translation[1] = dny;
+  quat.fromEuler(mask.rotation, 0, 0, midbrow.a * 180 / Math.PI - 90);
 }
 
 function dist (a, b) {
