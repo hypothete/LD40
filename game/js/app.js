@@ -9,16 +9,43 @@ var leftEye,
 var eyeImg = new Image();
 eyeImg.src = 'eye.png';
 
+const tex = loadTexture(gl, './img/smile.png');
+
+const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
+gl.useProgram(shaderProgram);
+const programInfo = {
+  attribLocations: {
+    vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
+    textureCoord: gl.getAttribLocation(shaderProgram, 'aTextureCoord')
+  },
+  uniformLocations: {
+    projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
+    modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
+    uSampler: gl.getUniformLocation(shaderProgram, 'uSampler')
+  },
+};
+
+var mask;
+
+
+///// INIT SETUP
 
 tracker.setStepSize(1.7);
-
 tracking.track('#video', tracker, { camera: true });
 
-animate();
+fetch(new Request('./models/faceplane.obj'))
+.then((objResponse) => {
+  return objResponse.text();
+})
+.then((objText) => {
+  mask = makeModel(new OBJ.Mesh(objText));
+  scene.push(mask);
+  OBJ.initMeshBuffers(gl, mask.mesh);
+  vec3.set(mask.translation, 0, 0, -5);
+  animate();
+});
 
 tracker.on('track', function(event) {
-
-
   let eyeData = findEyePair(event.data);
   if (eyeData.count == 1) {
     let pair = eyeData.tally[0];
@@ -41,26 +68,18 @@ tracker.on('track', function(event) {
     ) + Math.PI/2;
     mouth.x = midbrow.x+Math.cos(midbrow.a)*eyedist*1.168;
     mouth.y = midbrow.y+Math.sin(midbrow.a)*eyedist*1.168;
+    updateMaskPosition();
   }
 });
+
+
+/////
 
 function animate () {
   requestAnimationFrame(animate);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawFace();
-}
-
-function drawRects (rects) {
-  //ctx.strokeStyle = 'red';
-  rects.forEach((rect) => {
-    //ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
-    if (!rect) return;
-    ctx.drawImage(eyeImg, rect.x, rect.y, rect.width, rect.height);
-    if (typeof rect.color !== 'undefined') {
-      ctx.fillStyle = rect.color;
-      ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
-    }
-  });
+  drawScene(gl, programInfo, scene);
 }
 
 function drawFace () {
@@ -84,7 +103,6 @@ function drawFace () {
   ctx.restore();
 }
 
-
 function findEyePair (rects) {
   let rectParallelTally = [];
   for (let i=0; i<rects.length; i++) {
@@ -101,6 +119,17 @@ function findEyePair (rects) {
     }
   }
   return { count: rectParallelTally.length, tally: rectParallelTally};
+}
+
+function updateMaskPosition () {
+  let nx = (midbrow.x - canvas.width/2) / (canvas.width/2);
+  let ny = (midbrow.y - canvas.height/2) / (canvas.height/2);
+  let z = mask.translation[2];
+  let hov = camera.fov * camera.ar;
+  let xoff = (z * nx);
+  let yoff = (z * ny);
+  mask.translation[0] = xoff;
+  mask.translation[1] = yoff;
 }
 
 function dist (a, b) {

@@ -1,7 +1,19 @@
+body {
+  overflow-x: scroll;
+}
+
 #panes {
   position: relative;
+  width: 640px;
+  height: 480px;
+  display: inline-block;
 }
 
 #video, #canvas {
+  position: absolute;
+  transform: rotateY(180deg);
+}
+
+#gl {
   position: absolute;
 }
