@@ -1,0 +1,19 @@
+T -8 hours:
+Posted "Im In": https://ldjam.com/events/ludum-dare/40/$55793/im-in
+Brushing up on WebGl using the MDN guide: https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial
+Rendered the Utah Teapot successfully! I've been wanting to do that since I was 8 years old.
+
+T -6 hours:
+Having a rough time with loading textures using webgl-obj-loader.js. Not sure if I set up UVs properly in Blender for the teapot.
+
+T -4 hours:
+Textured a teapot! UVs are crap but I loaded the image properly. The "index" concept of the WebGL interface had me confused - when you set up a program you note the indices where attributes and unfiroms (shader variable types) exist in the shader bodies. Later on when you're actually drawing you 1. bind to a buffer, then 2. call vertexAttribPointer
+
+T -2.5 hours:
+Lighting, and incorporated GIF recording into the warmup project. Starting to get the hang of adding uniforms and attributes.
+
+T +1 hour:
+Brainstorming on the theme: "The more you have, the worse it gets." Since I want to work with AR or face tracking, my ideas mostly revolve around things in view of a webcam. Tribbles piling up. Something cooperative with multiple people's faces in a frame. Facebook profile filters. Snapchat filters that get rated for style points. 
+
+T +2.5 hours:
+Spent 45 minutes futzing with webpack + webgazer.js. Webgazer is built out of a bunch of window-dependent IIFEs that apparently disagree with Webpack + Babel. Moving on to a more plain setup so as not to waste time.

@@ -1,0 +1,14 @@
+{
+  "name": "ld40-entry",
+  "version": "0.0.1",
+  "description": "my entry for the Dec. 1 2017 Ludum Dare",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "hypothete",
+  "license": "ISC",
+  "dependencies": {
+    "tracking": "^1.1.3"
+  }
+}

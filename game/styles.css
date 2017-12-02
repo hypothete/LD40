@@ -1,0 +1,7 @@
+#panes {
+  position: relative;
+}
+
+#video, #canvas {
+  position: absolute;
+}
