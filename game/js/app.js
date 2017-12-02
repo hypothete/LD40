@@ -1,15 +1,10 @@
-var canvas = document.querySelector('#canvas');
-var ctx = canvas.getContext('2d');
 var tracker = new tracking.ObjectTracker(['eye']);
 var leftEye,
   rightEye,
   midbrow = { x: 0, y: 0, a: 0 },
   mouth = { x: 0, y: 0 };
 
-var eyeImg = new Image();
-eyeImg.src = 'eye.png';
-
-const tex = loadTexture(gl, './img/smile.png');
+const tex = loadTexture(gl, './img/anaglyph.png');
 
 const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
 gl.useProgram(shaderProgram);
@@ -77,30 +72,7 @@ tracker.on('track', function(event) {
 
 function animate () {
   requestAnimationFrame(animate);
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawFace();
   drawScene(gl, programInfo, scene);
-}
-
-function drawFace () {
-  if (!leftEye || !rightEye) return;
-  ctx.fillStyle = 'red';
-  ctx.fillRect(leftEye.x, leftEye.y, leftEye.width, leftEye.height);
-  ctx.fillStyle = 'green';
-  ctx.fillRect(rightEye.x, rightEye.y, rightEye.width, rightEye.height);
-  ctx.fillStyle = 'blue';
-  ctx.fillRect(midbrow.x-4, midbrow.y-4, 8,8);
-  ctx.strokeStyle = 'blue';
-  ctx.beginPath();
-  ctx.moveTo(midbrow.x,midbrow.y);
-  ctx.lineTo(mouth.x,mouth.y);
-  ctx.stroke();
-  ctx.save();
-  ctx.translate(mouth.x,mouth.y);
-  ctx.rotate(midbrow.a+Math.PI/2);
-  ctx.fillStyle = 'yellow';
-  ctx.fillRect(-20,-5,40,10);
-  ctx.restore();
 }
 
 function findEyePair (rects) {
@@ -123,14 +95,14 @@ function findEyePair (rects) {
 
 function updateMaskPosition () {
   let hov = camera.fov * camera.ar;
-  let zcam = (canvas.width/2) * Math.atan(hov/2);
+  let zcam = (glcan.width/2) * Math.atan(hov/2);
   let eyedist = dist({ x: leftEye.x, y: leftEye.y }, { x: rightEye.x + rightEye.width, y: rightEye.y });
 
   mask.translation[2] = -zcam / (eyedist);
   let z = mask.translation[2];
 
-  let dnx = (midbrow.x - canvas.width/2) * z / zcam;
-  let dny = (midbrow.y - canvas.height/2) * z / zcam;
+  let dnx = (midbrow.x - glcan.width/2) * z / zcam;
+  let dny = (midbrow.y - glcan.height/2) * z / zcam;
 
   mask.translation[0] = dnx;
   mask.translation[1] = dny;

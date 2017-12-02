@@ -1,5 +1,5 @@
 const glcan = document.querySelector('#gl');
-const gl = glcan.getContext('webgl');
+const gl = glcan.getContext('webgl', {premultipliedAlpha: false});
 const modelViewMatrix = mat4.create();
 const projectionMatrix = mat4.create();
 
@@ -34,8 +34,8 @@ const fsSource = `
 const camera = {
   fov: 90 * Math.PI/ 180,
   ar: glcan.clientWidth / glcan.clientHeight,
-  near: 1.0,
-  far: 1000.0,
+  near: 0.1,
+  far: 100.0,
   update: function () {
     mat4.perspective(projectionMatrix, camera.fov, camera.ar, camera.near, camera.far);
   }
