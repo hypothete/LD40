@@ -83,11 +83,11 @@ function drawScene(gl, programInfo, scene) {
   camera.update();
 
   for (let model of scene) {
-    drawObject(model);
+    drawObject(model, programInfo);
   }
 }
 
-function drawObject (model) {
+function drawObject (model, programInfo) {
   let mesh = model.mesh;
   gl.uniformMatrix4fv(programInfo.uniformLocations.projectionMatrix, false, projectionMatrix);
   gl.uniformMatrix4fv(programInfo.uniformLocations.modelViewMatrix, false, model.getModelMatrix());

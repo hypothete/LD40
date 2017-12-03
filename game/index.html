@@ -6,12 +6,19 @@
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <div id="panes">
-      <video id="video" width="640" height="480" autoplay></video>
-      <canvas id="gl" width="640" height="480"></canvas>
+    <div id="vue" v-loaded >
+      <div id="content">
+        {{JSON.stringify(leftEye)}}
+      </div>
     </div>
-    <canvas id="masksrc" class="" width="512" height="512"></canvas>
-
+    <div id="notvue">
+      <div id="panes">
+        <video id="video" width="640" height="480" autoplay></video>
+        <canvas id="gl" width="640" height="480"></canvas>
+      </div>
+      <canvas id="masksrc" class="" width="512" height="512"></canvas>
+    </div>
+    <script src="./node_modules/vue/dist/vue.js" charset="utf-8"></script>
     <script src="./node_modules/tracking/build/tracking.js" charset="utf-8"></script>
     <script src="./node_modules/tracking/build/data/eye-min.js"></script>
     <script src="./js/vendor/gl-matrix.js" charset="utf-8"></script>
