@@ -47,3 +47,9 @@ Took a dinner break and a power nap. Back on it.
 
 T +29 hours:
 Set up a mask stack and corresponding buttons for adding / clearing masks in Vue. I couldn't figure out why duplicates of the same mask were stacking at the same level, instead of being rendered in the order of the mask stack. It turned out that since the draw code relied on loading an image, one mask would load faster than the next in the stack _because it had been loaded before_. So, I turned the stack render method into a self-building promise chain. They're really great for this sort of thing.
+
+T +38 hours:
+I'm awake and back at it. Working on getting more of a user flow going on the page. A little concerned about the canvas tags falling outside of Vue's purview. Going to try and rectify that today. My goal is to get user flow done by noon, then work on accoutrements and score until the end.
+
+T +40 hours:
+User flow is roughed in, and Vue is finally playing nicely with the canvases, although it took some bending over backwards to make it happen.

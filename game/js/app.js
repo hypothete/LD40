@@ -1,4 +1,4 @@
-///// INIT SETUP
+var glcan, gl, maskcan, maskctx, modelViewMatrix, projectionMatrix, camera, shaderProgram, programInfo;
 
 var app = new Vue({
   el: '#vue',
@@ -29,42 +29,112 @@ var app = new Vue({
       {
         name: 'senpai',
         url: './img/senpai.png'
-      },
-      {
-        name: '*clear*',
-        url: ''
       }
     ],
     maskStack: [],
-    imgCache: {}
+    imgCache: {},
+    screen: 'title',
+    editorStarted: false
   },
-  directives: {
-    loaded: {
-      inserted: function (el, binding, vnode) {
-        let self = vnode.context;
+  methods: {
+    startEditor () {
+      let self = this;
+      if (!this.editorStarted) {
         fetch(new Request('./models/faceplane.obj'))
         .then((objResponse) => {
           return objResponse.text();
         })
         .then((objText) => {
+          self.loadGL();
           self.mask = makeModel(new OBJ.Mesh(objText), useCanvasAsTexture(maskcan));
-          self.scene.push(self.mask);
           OBJ.initMeshBuffers(gl, self.mask.mesh);
+          self.scene.push(self.mask);
           vec3.set(self.mask.translation, 0, 0, -2);
+
           let randomMask = pick(self.maskOptions);
           self.maskStack.push(randomMask);
           self.updateMaskStack();
 
-          self.tracker.setStepSize(1.7);
-          tracking.track('#video', self.tracker, { camera: true });
-          self.tracker.on('track', self.trackEventHandler);
+          this.tracker.setStepSize(1.7);
+          tracking.track('#video', this.tracker, { camera: true });
+          this.tracker.on('track', this.trackEventHandler);
+
+          this.editorStarted = true;
 
           self.animate();
         });
       }
-    }
-  },
-  methods: {
+    },
+
+    startFilter () {
+
+    },
+
+    startScore () {
+
+    },
+
+    loadGL () {
+      glcan = document.querySelector('#gl');
+      gl = glcan.getContext('webgl', {premultipliedAlpha: false});
+      maskcan = document.querySelector('#masksrc');
+      maskctx = maskcan.getContext('2d');
+      modelViewMatrix = mat4.create();
+      projectionMatrix = mat4.create();
+
+      const vsSource = `
+        attribute vec2 aTextureCoord;
+        attribute vec4 aVertexPosition;
+
+        uniform mat4 uModelViewMatrix;
+        uniform mat4 uProjectionMatrix;
+
+        varying vec2 vTextureCoord;
+
+        void main() {
+          vTextureCoord = aTextureCoord;
+          gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
+        }
+      `;
+
+      const fsSource = `
+        precision highp float;
+
+        uniform sampler2D uSampler;
+
+        varying vec2 vTextureCoord;
+
+        void main() {
+          vec4 texelColor = texture2D(uSampler, vTextureCoord);
+          gl_FragColor = texelColor;
+        }
+      `;
+
+      camera = {
+        fov: 90 * Math.PI/ 180,
+        ar: glcan.clientWidth / glcan.clientHeight,
+        near: 0.1,
+        far: 100.0,
+        update: function () {
+          mat4.perspective(projectionMatrix, camera.fov, camera.ar, camera.near, camera.far);
+        }
+      };
+
+      shaderProgram = initShaderProgram(gl, vsSource, fsSource);
+      gl.useProgram(shaderProgram);
+
+      programInfo = {
+        attribLocations: {
+          vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
+          textureCoord: gl.getAttribLocation(shaderProgram, 'aTextureCoord')
+        },
+        uniformLocations: {
+          projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
+          modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
+          uSampler: gl.getUniformLocation(shaderProgram, 'uSampler')
+        },
+      };
+    },
 
     animate () {
       requestAnimationFrame(this.animate);
@@ -149,16 +219,16 @@ var app = new Vue({
       });
     },
 
+    clearMaskStack () {
+      maskctx.clearRect(0, 0, maskcan.width, maskcan.height);
+      this.maskStack = [];
+      this.mask.updateTexture(maskcan);
+    },
+
     updateMaskStack () {
       let self = this;
       maskctx.clearRect(0, 0, maskcan.width, maskcan.height);
-      if (self.maskStack[self.maskStack.length-1].url.length === 0) {
-        self.mask.updateTexture(maskcan);
-        self.maskStack = [];
-        return;
-      }
       let chainHead = Promise.resolve();
-
       for (let mask of self.maskStack) {
         chainHead = chainHead.then(function () {
             return self.drawUrlToMask(mask.url);
