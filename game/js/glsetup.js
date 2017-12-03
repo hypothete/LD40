@@ -1,5 +1,5 @@
 const glcan = document.querySelector('#gl');
-const gl = glcan.getContext('webgl', {premultipliedAlpha: true});
+const gl = glcan.getContext('webgl', {premultipliedAlpha: false});
 const maskcan = document.querySelector('#masksrc');
 const maskctx = maskcan.getContext('2d');
 const modelViewMatrix = mat4.create();
@@ -41,6 +41,22 @@ const camera = {
   update: function () {
     mat4.perspective(projectionMatrix, camera.fov, camera.ar, camera.near, camera.far);
   }
+};
+
+const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
+
+gl.useProgram(shaderProgram);
+
+const programInfo = {
+  attribLocations: {
+    vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
+    textureCoord: gl.getAttribLocation(shaderProgram, 'aTextureCoord')
+  },
+  uniformLocations: {
+    projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
+    modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
+    uSampler: gl.getUniformLocation(shaderProgram, 'uSampler')
+  },
 };
 
 function initShaderProgram(gl, vsSource, fsSource) {

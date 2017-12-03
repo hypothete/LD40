@@ -1,17 +1,3 @@
-const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
-gl.useProgram(shaderProgram);
-const programInfo = {
-  attribLocations: {
-    vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
-    textureCoord: gl.getAttribLocation(shaderProgram, 'aTextureCoord')
-  },
-  uniformLocations: {
-    projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
-    modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
-    uSampler: gl.getUniformLocation(shaderProgram, 'uSampler')
-  },
-};
-
 ///// INIT SETUP
 
 var app = new Vue({
@@ -22,7 +8,33 @@ var app = new Vue({
     rightEye: null,
     midbrow: { x: 0, y: 0, a: 0 },
     scene: [],
-    tracker: new tracking.ObjectTracker(['eye'])
+    tracker: new tracking.ObjectTracker(['eye']),
+    maskOptions: [
+      {
+        name: 'anaglyph',
+        url: './img/anaglyph.png'
+      },
+      {
+        name: 'flower-crown',
+        url: './img/flower-crown.png'
+      },
+      {
+        name: 'greek',
+        url: './img/greek.png'
+      },
+      {
+        name: 'smile',
+        url: './img/smile.png'
+      },
+      {
+        name: 'senpai',
+        url: './img/senpai.png'
+      },
+      {
+        name: '*clear*',
+        url: ''
+      }
+    ]
   },
   directives: {
     loaded: {
@@ -37,13 +49,8 @@ var app = new Vue({
           self.scene.push(self.mask);
           OBJ.initMeshBuffers(gl, self.mask.mesh);
           vec3.set(self.mask.translation, 0, 0, -2);
-
-          let img = new Image();
-          img.onload = function () {
-            maskctx.drawImage(img, 0,0,maskcan.width, maskcan.height);
-            self.mask.updateTexture(maskcan);
-          }
-          img.src = './img/smile.png';
+          let randomMask = pick(self.maskOptions);
+          self.drawUrlToMask(randomMask.url);
 
           self.tracker.setStepSize(1.7);
           tracking.track('#video', self.tracker, { camera: true });
@@ -56,12 +63,12 @@ var app = new Vue({
   },
   methods: {
 
-    animate: function () {
+    animate () {
       requestAnimationFrame(this.animate);
       drawScene(gl, programInfo, this.scene);
     },
 
-    trackEventHandler: function (event) {
+    trackEventHandler (event) {
       let eyeData = this.findEyePair(event.data);
       if (eyeData.count == 1) {
         let pair = eyeData.tally[0];
@@ -116,6 +123,21 @@ var app = new Vue({
       this.mask.translation[0] = dnx;
       this.mask.translation[1] = dny;
       quat.fromEuler(this.mask.rotation, 0, 0, this.midbrow.a * 180 / Math.PI - 90);
+    },
+
+    drawUrlToMask(url) {
+      let self = this;
+      if (url.length == 0) {
+        maskctx.clearRect(0, 0, maskcan.width, maskcan.height);
+        self.mask.updateTexture(maskcan);
+        return;
+      }
+      let img = new Image();
+      img.onload = function () {
+        maskctx.drawImage(img, 0, 0, maskcan.width, maskcan.height);
+        self.mask.updateTexture(maskcan);
+      }
+      img.src = url;
     }
 
   }
@@ -125,4 +147,8 @@ var app = new Vue({
 
 function dist (a, b) {
   return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
+}
+
+function pick (arr) {
+  return arr[Math.floor(arr.length * Math.random())];
 }
