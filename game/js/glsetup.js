@@ -1,5 +1,7 @@
 const glcan = document.querySelector('#gl');
-const gl = glcan.getContext('webgl', {premultipliedAlpha: false});
+const gl = glcan.getContext('webgl', {premultipliedAlpha: true});
+const maskcan = document.querySelector('#masksrc');
+const maskctx = maskcan.getContext('2d');
 const modelViewMatrix = mat4.create();
 const projectionMatrix = mat4.create();
 
@@ -93,7 +95,7 @@ function drawObject (model) {
   gl.bindBuffer(gl.ARRAY_BUFFER, mesh.textureBuffer);
   gl.vertexAttribPointer(programInfo.attribLocations.textureCoord, mesh.textureBuffer.itemSize, gl.FLOAT, false, 0, 0);
   gl.activeTexture(gl.TEXTURE0);
-  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.bindTexture(gl.TEXTURE_2D, model.texture);
   gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
   gl.enableVertexAttribArray(programInfo.attribLocations.textureCoord);
 
@@ -123,14 +125,34 @@ function loadTexture (gl, url) {
   return texture;
 }
 
-function makeModel (mesh) {
+function useCanvasAsTexture (somecan) {
+  const texture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, somecan);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  return texture;
+}
+
+function makeModel (mesh, texture) {
   let model = {
     mesh: mesh,
+    texture: texture || null,
     translation: vec3.create(),
     rotation: quat.create(),
     scale: vec3.fromValues(1.0,1.0,1.0),
     getModelMatrix: function () {
       return mat4.fromRotationTranslationScale(mat4.create(), model.rotation, model.translation, model.scale);
+    },
+    updateTexture: function (src) {
+      if (model.texture) {
+        gl.bindTexture(gl.TEXTURE_2D, model.texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, src);
+      }
+      else {
+        console.log('tried to update a null texture.');
+      }
     }
   };
   return model;

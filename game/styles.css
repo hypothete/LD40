@@ -9,11 +9,15 @@ body {
   display: inline-block;
 }
 
-#video, #canvas {
+#video {
   position: absolute;
   transform: rotateY(180deg);
 }
 
 #gl {
   position: absolute;
+}
+
+.hidden {
+  display: none;
 }

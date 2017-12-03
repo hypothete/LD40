@@ -4,7 +4,7 @@ var leftEye,
   midbrow = { x: 0, y: 0, a: 0 },
   mouth = { x: 0, y: 0 };
 
-const tex = loadTexture(gl, './img/anaglyph.png');
+// const tex = loadTexture(gl, './img/smile.png');
 
 const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
 gl.useProgram(shaderProgram);
@@ -33,11 +33,18 @@ fetch(new Request('./models/faceplane.obj'))
   return objResponse.text();
 })
 .then((objText) => {
-  mask = makeModel(new OBJ.Mesh(objText));
+  mask = makeModel(new OBJ.Mesh(objText), useCanvasAsTexture(maskcan));
   scene.push(mask);
   OBJ.initMeshBuffers(gl, mask.mesh);
   vec3.set(mask.translation, 0, 0, -2);
   animate();
+
+  let img = new Image();
+  img.onload = function () {
+    maskctx.drawImage(img, 0,0,maskcan.width, maskcan.height);
+    mask.updateTexture(maskcan);
+  }
+  img.src = './img/smile.png';
 });
 
 tracker.on('track', function(event) {

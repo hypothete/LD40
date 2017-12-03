@@ -35,3 +35,6 @@ Successfully projecting from the canvas positions to move and rotate the 3D mask
 
 T +19 hours:
 Figured out z depth. Spent a lot of time reading up on the rule of similar triangles. Only thing that makes me hesitant about this is figuring out FOV of the average user's webcam. Just guessing at 90 degrees for now.
+
+T +21 hours:
+Mostly cleaning up the project and trying out silly masks! I need to get back on the "game mechanic" - side of things. Thinking about getting Vue set up. Had an idea about combos of masks + filters to make a scoring mechanism.
