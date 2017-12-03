@@ -7,7 +7,7 @@ T -6 hours:
 Having a rough time with loading textures using webgl-obj-loader.js. Not sure if I set up UVs properly in Blender for the teapot.
 
 T -4 hours:
-Textured a teapot! UVs are crap but I loaded the image properly. The "index" concept of the WebGL interface had me confused - when you set up a program you note the indices where attributes and unfiroms (shader variable types) exist in the shader bodies. Later on when you're actually drawing you 1. bind to a buffer, then 2. call vertexAttribPointer
+Textured a teapot! UVs are crap but I loaded the image properly. The "index" concept of the WebGL interface had me confused - when you set up a program you note the indices where attributes and uniforms (shader variable types) exist in the shader bodies. Later on when you're actually drawing you 1. bind to a buffer, then 2. call vertexAttribPointer
 
 T -2.5 hours:
 Lighting, and incorporated GIF recording into the warmup project. Starting to get the hang of adding uniforms and attributes.

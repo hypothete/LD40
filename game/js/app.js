@@ -35,7 +35,8 @@ var app = new Vue({
         url: ''
       }
     ],
-    maskStack: []
+    maskStack: [],
+    imgCache: {}
   },
   directives: {
     loaded: {
@@ -130,13 +131,21 @@ var app = new Vue({
     drawUrlToMask(url) {
       let self = this;
       return new Promise(function (res) {
-        let img = new Image();
-        img.onload = function () {
-          maskctx.drawImage(img, 0, 0, maskcan.width, maskcan.height);
+        if (self.imgCache[url]) {
+          maskctx.drawImage(self.imgCache[url], 0, 0, maskcan.width, maskcan.height);
           self.mask.updateTexture(maskcan);
           res();
         }
-        img.src = url;
+        else {
+          let img = new Image();
+          img.onload = function () {
+            maskctx.drawImage(img, 0, 0, maskcan.width, maskcan.height);
+            self.mask.updateTexture(maskcan);
+            self.imgCache[url] = img;
+            res();
+          }
+          img.src = url;
+        }
       });
     },
 
@@ -151,7 +160,7 @@ var app = new Vue({
       let chainHead = Promise.resolve();
 
       for (let mask of self.maskStack) {
-        chainHead.then(function () {
+        chainHead = chainHead.then(function () {
             return self.drawUrlToMask(mask.url);
         });
       }
