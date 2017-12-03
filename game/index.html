@@ -7,7 +7,7 @@
   </head>
   <body>
     <div id="vue" v-loaded >
-      <button v-for="maskOption in maskOptions" @click="drawUrlToMask(maskOption.url)">{{maskOption.name}}</button>
+      <button v-for="maskOption in maskOptions" @click="maskStack.push(maskOption); updateMaskStack()">{{maskOption.name}}</button>
     </div>
     <div id="notvue">
       <div id="panes">

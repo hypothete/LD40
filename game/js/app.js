@@ -34,7 +34,8 @@ var app = new Vue({
         name: '*clear*',
         url: ''
       }
-    ]
+    ],
+    maskStack: []
   },
   directives: {
     loaded: {
@@ -50,7 +51,8 @@ var app = new Vue({
           OBJ.initMeshBuffers(gl, self.mask.mesh);
           vec3.set(self.mask.translation, 0, 0, -2);
           let randomMask = pick(self.maskOptions);
-          self.drawUrlToMask(randomMask.url);
+          self.maskStack.push(randomMask);
+          self.updateMaskStack();
 
           self.tracker.setStepSize(1.7);
           tracking.track('#video', self.tracker, { camera: true });
@@ -127,17 +129,32 @@ var app = new Vue({
 
     drawUrlToMask(url) {
       let self = this;
-      if (url.length == 0) {
-        maskctx.clearRect(0, 0, maskcan.width, maskcan.height);
+      return new Promise(function (res) {
+        let img = new Image();
+        img.onload = function () {
+          maskctx.drawImage(img, 0, 0, maskcan.width, maskcan.height);
+          self.mask.updateTexture(maskcan);
+          res();
+        }
+        img.src = url;
+      });
+    },
+
+    updateMaskStack () {
+      let self = this;
+      maskctx.clearRect(0, 0, maskcan.width, maskcan.height);
+      if (self.maskStack[self.maskStack.length-1].url.length === 0) {
         self.mask.updateTexture(maskcan);
+        self.maskStack = [];
         return;
       }
-      let img = new Image();
-      img.onload = function () {
-        maskctx.drawImage(img, 0, 0, maskcan.width, maskcan.height);
-        self.mask.updateTexture(maskcan);
+      let chainHead = Promise.resolve();
+
+      for (let mask of self.maskStack) {
+        chainHead.then(function () {
+            return self.drawUrlToMask(mask.url);
+        });
       }
-      img.src = url;
     }
 
   }

@@ -44,3 +44,6 @@ Internet crapped out, mouse died, Vue kills the app for some reason. Not good. O
 
 T + 26 hours:
 Took a dinner break and a power nap. Back on it.
+
+T +29 hours:
+Set up a mask stack and corresponding buttons for adding / clearing masks in Vue. I couldn't figure out why duplicates of the same mask were stacking at the same level, instead of being rendered in the order of the mask stack. It turned out that since the draw code relied on loading an image, one mask would load faster than the next in the stack _because it had been loaded before_. So, I turned the stack render method into a self-building promise chain. They're really great for this sort of thing.
