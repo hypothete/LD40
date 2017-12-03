@@ -10,13 +10,32 @@ var app = new Vue({
     scene: [],
     tracker: new tracking.ObjectTracker(['eye']),
     trackerListener: null,
+    stepData: [
+      {
+        name: 'title',
+        title: 'Welcome'
+      },
+      {
+        name: 'editor',
+        title: 'Put stuff on your face'
+      },
+      {
+        name: 'filter',
+        title: 'Add a filter!'
+      },
+      {
+        name: 'score',
+        title: 'Let\'s see how you did'
+      }
+    ],
+    activeStep: null,
     maskOptions: [
       {
-        name: 'anaglyph',
+        name: '3D glasses',
         url: './img/anaglyph.png'
       },
       {
-        name: 'flower-crown',
+        name: 'flower crown',
         url: './img/flower-crown.png'
       },
       {
@@ -46,11 +65,11 @@ var app = new Vue({
         url: './img/filter-fire.png'
       },
       {
-        name: 'lavalamp',
+        name: 'lava lamp',
         url: './img/filter-lavalamp.png'
       },
       {
-        name: 'tv',
+        name: 'TV',
         url: './img/filter-tv.png'
       },
       {
@@ -61,16 +80,24 @@ var app = new Vue({
     selectedFilter: null,
     maskStack: [],
     imgCache: {},
-    screen: 'title',
     activemenu: 'buttons',
     editorStarted: false,
     filterStarted: false,
     imgToFilter: null
   },
+  created () {
+    this.activeStep = this.stepData[0];
+  },
   methods: {
+    startTitle () {
+      this.activeStep = this.stepData[0];
+      this.clearMaskStack();
+      this.selectedFilter = null;
+      this.imgToFilter = null;
+    },
     startEditor () {
       let self = this;
-      self.screen = 'editor';
+      this.activeStep = this.stepData[1];
       if (!this.editorStarted) {
         fetch(new Request('./models/faceplane.obj'))
         .then((objResponse) => {
@@ -107,7 +134,7 @@ var app = new Vue({
 
     startFilter () {
       this.trackerListener.stop();
-      this.screen = 'filter';
+      this.activeStep = this.stepData[2];
       if (!this.filterStarted) {
         this.filterStarted = true;
         filtercan = document.querySelector('#filtercan');
@@ -139,13 +166,18 @@ var app = new Vue({
       }
     },
 
+    randomFilter () {
+      let randFilter = pick(this.filterOptions);
+      this.selectFilter(randFilter);
+    },
+
     clearFilter () {
       this.selectedFilter = null;
       filterctx.drawImage(this.imgToFilter, 0, 0, filtercan.width, filtercan.height);
     },
 
     startScore () {
-      this.screen = 'score';
+      this.activeStep = this.stepData[3];
     },
 
     loadGL () {
@@ -311,7 +343,12 @@ var app = new Vue({
             return self.drawUrlToMask(mask.url);
         });
       }
-    }
+    },
+
+    randomMask () {
+      this.maskStack.push(pick(this.maskOptions));
+      this.updateMaskStack();
+    },
 
   }
 });
