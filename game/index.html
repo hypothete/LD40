@@ -10,50 +10,70 @@
 
       <div class="title" v-show="screen === 'title'">
         <h1>Welcome!</h1>
-        <p>
-          Intro text here
-        </p>
-        <div>
-          <button @click="startEditor()">START</button>
+        <div class="step-body">
+          <p>
+            Intro text here
+          </p>
+          <div>
+            <button class="flow-button" @click="startEditor()">Start 🡒</button>
+          </div>
         </div>
       </div>
 
       <div class="editor" v-show="screen === 'editor'">
-        <div class="preview">
-          <div id="panes">
-            <video id="video" width="640" height="480" autoplay></video>
-            <canvas id="gl" width="640" height="480"></canvas>
-          </div>
-          <canvas id="masksrc" class="hidden" width="512" height="512"></canvas>
-        </div>
-        <div class="menu">
-          <div class="menu-buttons">
-            <button v-for="maskOption in maskOptions" @click="maskStack.push(maskOption); updateMaskStack()">{{maskOption.name}}</button>
-            <button @click="clearMaskStack()">clear</button>
-          </div>
-          <div class="menu-stack">
-            <div class="stack-item" v-for="(mask, index) in maskStack">
-              <img :src="mask.url" class="stack-thumb">
-              <b>{{index + ': ' + mask.name}}</b>
+        <h1>Put stuff on your face</h1>
+        <div class="editor-body">
+          <div class="preview">
+            <div id="panes">
+              <video id="video" width="640" height="480" autoplay></video>
+              <canvas id="gl" width="640" height="480"></canvas>
             </div>
+            <canvas id="masksrc" class="hidden" width="512" height="512"></canvas>
           </div>
-          <button @click="startFilter()">Add a filter</button>
+          <div class="menu">
+            <div class="menu-tabs">
+              <div :class="{ 'menu-tab': true, 'tab-selected': activemenu === 'buttons' }" @click="activemenu = 'buttons'">
+                Add accessory
+              </div>
+              <div :class="{ 'menu-tab': true, 'tab-selected': activemenu === 'stack' }" @click="activemenu = 'stack'">
+                View selections
+              </div>
+            </div>
+            <div class="menu-buttons" v-show="activemenu === 'buttons'">
+              <button v-for="maskOption in maskOptions" @click="maskStack.push(maskOption); updateMaskStack()">{{maskOption.name}}</button>
+              <button @click="clearMaskStack()">clear</button>
+            </div>
+
+            <div class="menu-stack" v-show="activemenu === 'stack'">
+              <div class="stack-item" v-for="(mask, index) in maskStack">
+                <img :src="mask.url" class="stack-thumb">
+                <b>{{index + ': ' + mask.name}}</b>
+              </div>
+            </div>
+
+            <button class="flow-button" @click="startFilter()">Add a filter 🡒</button>
+          </div>
         </div>
       </div>
 
       <div class="filter" v-show="screen === 'filter'">
         <h1>Filters here oh boy</h1>
-        <button @click="startScore()">Score</button>
+        <div class="step-body">
+          <canvas id="filtercan" width="640" height="480"></canvas>
+          <button class="flow-button" @click="startScore()">Score 🡒</button>
+        </div>
       </div>
 
       <div class="score" v-show="screen === 'score'">
         <h1>Let's see how you did</h1>
-        <ul>
-          <li>You were great!</li>
-        </ul>
-        <button @click="clearMaskStack(); startEditor()">Try again</button>
-        <div class="share-buttons">
-          Twitter Facebook Gplus
+        <div class="step-body">
+          <ul>
+            <li>You were great!</li>
+          </ul>
+          <button class="flow-button" @click="clearMaskStack(); startEditor()">Start Over 🡒</button>
+          <div class="share-buttons">
+            Twitter Facebook Gplus
+          </div>
         </div>
       </div>
 

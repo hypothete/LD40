@@ -52,4 +52,7 @@ T +38 hours:
 I'm awake and back at it. Working on getting more of a user flow going on the page. A little concerned about the canvas tags falling outside of Vue's purview. Going to try and rectify that today. My goal is to get user flow done by noon, then work on accoutrements and score until the end.
 
 T +40 hours:
-User flow is roughed in, and Vue is finally playing nicely with the canvases, although it took some bending over backwards to make it happen.
+User flow is roughed in, and Vue is finally playing nicely with the canvases, although it took some bending over backwards to make it happen. CSS issues.
+
+T +41 hours:
+More flow and CSS improvements, started on filter step and am successfully compositing the GL video context with video stills.

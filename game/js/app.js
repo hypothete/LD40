@@ -1,4 +1,4 @@
-var glcan, gl, maskcan, maskctx, modelViewMatrix, projectionMatrix, camera, shaderProgram, programInfo;
+var glcan, gl, maskcan, maskctx, modelViewMatrix, projectionMatrix, camera, shaderProgram, programInfo, filtercan, filterctx;
 
 var app = new Vue({
   el: '#vue',
@@ -9,6 +9,7 @@ var app = new Vue({
     midbrow: { x: 0, y: 0, a: 0 },
     scene: [],
     tracker: new tracking.ObjectTracker(['eye']),
+    trackerListener: null,
     maskOptions: [
       {
         name: 'anaglyph',
@@ -34,7 +35,10 @@ var app = new Vue({
     maskStack: [],
     imgCache: {},
     screen: 'title',
-    editorStarted: false
+    activemenu: 'buttons',
+    editorStarted: false,
+    filterStarted: false,
+    imgToFilter: null
   },
   methods: {
     startEditor () {
@@ -57,7 +61,7 @@ var app = new Vue({
           self.updateMaskStack();
 
           this.tracker.setStepSize(1.7);
-          tracking.track('#video', this.tracker, { camera: true });
+          self.trackerListener = tracking.track('#video', this.tracker, { camera: true });
           this.tracker.on('track', this.trackEventHandler);
 
           this.editorStarted = true;
@@ -65,10 +69,31 @@ var app = new Vue({
           self.animate();
         });
       }
+      else {
+        this.trackerListener.run();
+
+        let randomMask = pick(self.maskOptions);
+        self.maskStack.push(randomMask);
+        self.updateMaskStack();
+      }
     },
 
     startFilter () {
+      this.trackerListener.stop();
       this.screen = 'filter';
+      if (!this.filterStarted) {
+        this.filterStarted = true;
+        filtercan = document.querySelector('#filtercan');
+        filterctx = filtercan.getContext('2d');
+      }
+      filterctx.save();
+      filterctx.translate(filtercan.width, 0);
+      filterctx.scale(-1, 1);
+      filterctx.drawImage(document.querySelector('#video'), 0, 0, filtercan.width, filtercan.height);
+      filterctx.restore();
+      filterctx.drawImage(glcan, 0, 0, filtercan.width, filtercan.height);
+      this.imgToFilter = new Image();
+      this.imgToFilter.src = filtercan.toDataURL(0,0,filtercan.width, filtercan.height);
     },
 
     startScore () {
@@ -77,7 +102,10 @@ var app = new Vue({
 
     loadGL () {
       glcan = document.querySelector('#gl');
-      gl = glcan.getContext('webgl', {premultipliedAlpha: false});
+      gl = glcan.getContext('webgl', {
+        premultipliedAlpha: false,
+        preserveDrawingBuffer: true
+      });
       maskcan = document.querySelector('#masksrc');
       maskctx = maskcan.getContext('2d');
       modelViewMatrix = mat4.create();

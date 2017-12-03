@@ -13,6 +13,13 @@ body {
   justify-content: center;
 }
 
+.step-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .title {
   display: flex;
   flex-direction: column;
@@ -20,11 +27,24 @@ body {
   justify-content: flex-start;
 }
 
+.flow-button {
+  width: 100%;
+  padding: 8px;
+}
+
 .editor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.editor-body {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   justify-content: center;
+  max-height: 500px;
 }
 
 #panes {
@@ -44,21 +64,48 @@ body {
 
 .menu {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
+  width: 240px;
+  margin-left: 2px;
+  max-height: 100%;
+}
+
+.menu-tabs {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+  border-bottom: 1px solid black;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+}
+
+.menu-tab {
+  font-weight: bold;
+  font-size: 0.8em;
+  border: 1px solid black;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.tab-selected {
+  background-color: #ccc;
 }
 
 .menu-buttons {
   display: flex;
+  width: 100%;
   flex-direction: column;
   justify-content: space-between;
-  margin-left: 2px;
+  margin-bottom: 8px;
 }
 
 .menu-stack {
   display: flex;
-  width: 240px;
+  width: 100%;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
@@ -66,7 +113,7 @@ body {
   overflow-y: scroll;
   overflow-x: auto;
   border: 1px solid black;
-  margin-left: 2px;
+  margin-bottom: 8px;
 }
 
 .stack-item {
@@ -83,9 +130,15 @@ body {
 }
 
 .filter {
-
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .score {
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 }
