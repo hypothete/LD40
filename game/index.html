@@ -75,9 +75,15 @@
 
       <div class="score" v-show="activeStep.name === 'score'">
         <div class="step-body">
+          <h2>You did great!</h2>
           <ul>
-            <li>You were great!</li>
+            <li>Composition: {{centeredScore}} points</li>
+            <li>Jaunty angles: {{jauntyScore}} points</li>
+            <li>Cropping: {{faceSizeScore}} points</li>
           </ul>
+          <h1>
+            <i>Total: {{totalScore}} points</i>
+          </h1>
           <div class="share-buttons">
             Twitter Facebook Gplus
           </div>

@@ -21,7 +21,7 @@ var app = new Vue({
       },
       {
         name: 'filter',
-        title: 'Add a filter!'
+        title: 'Add a filter'
       },
       {
         name: 'score',
@@ -83,7 +83,22 @@ var app = new Vue({
     activemenu: 'buttons',
     editorStarted: false,
     filterStarted: false,
-    imgToFilter: null
+    imgToFilter: null,
+    centeredScore: 0,
+    jauntyScore: 0,
+    faceSizeScore: 0
+  },
+  computed: {
+    totalScore () {
+      let scores = [
+        this.centeredScore,
+        this.jauntyScore,
+        this.faceSizeScore
+      ];
+      return scores.reduce((a, b) => {
+        return a + b;
+      });
+    }
   },
   created () {
     this.activeStep = this.stepData[0];
@@ -94,6 +109,7 @@ var app = new Vue({
       this.clearMaskStack();
       this.selectedFilter = null;
       this.imgToFilter = null;
+      this.clearScores();
     },
     startEditor () {
       let self = this;
@@ -133,6 +149,12 @@ var app = new Vue({
     },
 
     startFilter () {
+      // calculate scores from face tracking before continuing
+      this.getCenteredScore();
+      this.getJauntyScore();
+      this.getFaceSizeScore();
+
+      //continue
       this.trackerListener.stop();
       this.activeStep = this.stepData[2];
       if (!this.filterStarted) {
@@ -349,6 +371,26 @@ var app = new Vue({
       this.maskStack.push(pick(this.maskOptions));
       this.updateMaskStack();
     },
+
+    getCenteredScore () {
+      let browdist = dist(this.midbrow, { x: glcan.width/2, y: glcan.height/2}) / (glcan.width / 2);
+      this.centeredScore = 50 * (1 - Math.min(1, browdist)) | 0;
+    },
+
+    getJauntyScore () {
+      this.jauntyScore = Math.abs(90 - 180 * this.midbrow.a / Math.PI) | 0;
+    },
+
+    getFaceSizeScore () {
+      let eyedist = dist({ x: this.leftEye.x, y: this.leftEye.y }, { x: this.rightEye.x + this.rightEye.width, y: this.rightEye.y });
+      this.faceSizeScore = 100 * (eyedist / glcan.width) | 0;
+    },
+
+    clearScores () {
+      this.centeredScore = 0;
+      this.jauntyScore = 0;
+      this.faceSizeScore = 0;
+    }
 
   }
 });

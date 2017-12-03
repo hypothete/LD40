@@ -7,6 +7,10 @@ hr {
   width: 100%;
 }
 
+ul {
+  list-style: square;
+}
+
 .hidden {
   display: none;
 }
