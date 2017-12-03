@@ -39,7 +39,7 @@ body {
   justify-content: flex-start;
 }
 
-.editor-body {
+.editor-body, .filter-body {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
@@ -95,7 +95,7 @@ body {
   background-color: #ccc;
 }
 
-.menu-buttons {
+.menu-buttons, .filter-buttons {
   display: flex;
   width: 100%;
   flex-direction: column;

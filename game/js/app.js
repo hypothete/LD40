@@ -32,6 +32,33 @@ var app = new Vue({
         url: './img/senpai.png'
       }
     ],
+    filterOptions: [
+      {
+        name: 'anime',
+        url: './img/filter-anime.png'
+      },
+      {
+        name: 'beauty',
+        url: './img/filter-beauty.png'
+      },
+      {
+        name: 'fire',
+        url: './img/filter-fire.png'
+      },
+      {
+        name: 'lavalamp',
+        url: './img/filter-lavalamp.png'
+      },
+      {
+        name: 'tv',
+        url: './img/filter-tv.png'
+      },
+      {
+        name: 'vignette',
+        url: './img/filter-vignette.png'
+      }
+    ],
+    selectedFilter: null,
     maskStack: [],
     imgCache: {},
     screen: 'title',
@@ -94,6 +121,27 @@ var app = new Vue({
       filterctx.drawImage(glcan, 0, 0, filtercan.width, filtercan.height);
       this.imgToFilter = new Image();
       this.imgToFilter.src = filtercan.toDataURL(0,0,filtercan.width, filtercan.height);
+    },
+
+    selectFilter (filter) {
+      let self = this;
+      self.selectedFilter = filter;
+      filterctx.drawImage(self.imgToFilter, 0, 0, filtercan.width, filtercan.height);
+      if (!self.imgCache[filter.name]) {
+        self.imgCache[filter.name] = new Image();
+        self.imgCache[filter.name].onload = function () {
+          filterctx.drawImage(self.imgCache[filter.name], 0, 0, filtercan.width, filtercan.height);
+        }
+        self.imgCache[filter.name].src = filter.url;
+      }
+      else {
+        filterctx.drawImage(self.imgCache[filter.name], 0, 0, filtercan.width, filtercan.height);
+      }
+    },
+
+    clearFilter () {
+      this.selectedFilter = null;
+      filterctx.drawImage(this.imgToFilter, 0, 0, filtercan.width, filtercan.height);
     },
 
     startScore () {

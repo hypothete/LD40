@@ -50,16 +50,21 @@
                 <b>{{index + ': ' + mask.name}}</b>
               </div>
             </div>
-
-            <button class="flow-button" @click="startFilter()">Add a filter 🡒</button>
           </div>
         </div>
+        <button class="flow-button" @click="startFilter()">Add a filter 🡒</button>
       </div>
 
       <div class="filter" v-show="screen === 'filter'">
-        <h1>Filters here oh boy</h1>
+        <h1>Add a filter</h1>
         <div class="step-body">
-          <canvas id="filtercan" width="640" height="480"></canvas>
+          <div class="filter-body">
+            <canvas id="filtercan" width="640" height="480"></canvas>
+            <div class="filter-buttons">
+              <button v-for="filterOption in filterOptions" @click="selectFilter(filterOption)">{{filterOption.name}}</button>
+              <button @click="clearFilter()">clear</button>
+            </div>
+          </div>
           <button class="flow-button" @click="startScore()">Score 🡒</button>
         </div>
       </div>
