@@ -56,3 +56,6 @@ User flow is roughed in, and Vue is finally playing nicely with the canvases, al
 
 T +41 hours:
 More flow and CSS improvements, started on filter step and am successfully compositing the GL video context with video stills.
+
+T +45 hours:
+Score is starting to work, I came up with systems for giving points if your composition was centered and used interesting angles. Going to make some more masks and start to set up their point values.
