@@ -14,7 +14,7 @@
           Intro text here
         </p>
         <div>
-          <button @click="screen = 'editor'; startEditor()">START</button>
+          <button @click="startEditor()">START</button>
         </div>
       </div>
 
@@ -37,21 +37,21 @@
               <b>{{index + ': ' + mask.name}}</b>
             </div>
           </div>
-          <button @click="screen = 'filter'; startFilter()">Add a filter</button>
+          <button @click="startFilter()">Add a filter</button>
         </div>
       </div>
 
       <div class="filter" v-show="screen === 'filter'">
         <h1>Filters here oh boy</h1>
-        <button @click="screen = 'score'; startScore()">Score</button>
+        <button @click="startScore()">Score</button>
       </div>
 
-      <div class="scoring" v-show="screen === 'scoring'">
+      <div class="score" v-show="screen === 'score'">
         <h1>Let's see how you did</h1>
         <ul>
           <li>You were great!</li>
         </ul>
-        <button>Try again</button>
+        <button @click="clearMaskStack(); startEditor()">Try again</button>
         <div class="share-buttons">
           Twitter Facebook Gplus
         </div>

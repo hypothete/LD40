@@ -39,6 +39,7 @@ var app = new Vue({
   methods: {
     startEditor () {
       let self = this;
+      self.screen = 'editor';
       if (!this.editorStarted) {
         fetch(new Request('./models/faceplane.obj'))
         .then((objResponse) => {
@@ -67,11 +68,11 @@ var app = new Vue({
     },
 
     startFilter () {
-
+      this.screen = 'filter';
     },
 
     startScore () {
-
+      this.screen = 'score';
     },
 
     loadGL () {
