@@ -42,7 +42,6 @@ const camera = {
     mat4.perspective(projectionMatrix, camera.fov, camera.ar, camera.near, camera.far);
   }
 };
-const scene = [];
 
 function initShaderProgram(gl, vsSource, fsSource) {
   const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
