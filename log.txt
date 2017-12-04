@@ -59,3 +59,6 @@ More flow and CSS improvements, started on filter step and am successfully compo
 
 T +45 hours:
 Score is starting to work, I came up with systems for giving points if your composition was centered and used interesting angles. Going to make some more masks and start to set up their point values.
+
+T + 46 hours:
+I have to cut it short for another engagement. Getting ready to put code on my site. Ultimately my interpretation of the theme was loose: the more masks and filters you have, the worse your selfie gets. But I still had fun and worked really hard at some of the tech I used.

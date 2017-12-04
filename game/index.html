@@ -50,6 +50,9 @@
               <hr>
               <button @click="randomMask()">random</button>
               <button @click="clearMaskStack()">clear</button>
+              <p>
+                PROTIP: if you're having trouble getting the facial recognition to work, bug your eyes out.
+              </p>
             </div>
 
             <div class="menu-stack" v-show="activemenu === 'stack'">
@@ -89,18 +92,15 @@
           <h1>
             <i>Total: {{totalScore}} points</i>
           </h1>
-          <div class="share-buttons">
-            Twitter Facebook Gplus
-          </div>
           <div class="">
-            <a href="https://www.hypothete.com" target="_blank" noreferrer>2017 hypothete.com</a>
+            Made by Duncan Alexander for Ludum Dare 40. <a href="https://www.hypothete.com" target="_blank" noreferrer>2017 hypothete.com</a>
           </div>
         </div>
       </div>
 
     </div>
-    <script src="./node_modules/vue/dist/vue.js" charset="utf-8"></script>
-    <script src="./node_modules/tracking/build/tracking.js" charset="utf-8"></script>
+    <script src="./node_modules/vue/dist/vue.min.js" charset="utf-8"></script>
+    <script src="./node_modules/tracking/build/tracking-min.js" charset="utf-8"></script>
     <script src="./node_modules/tracking/build/data/eye-min.js"></script>
     <script src="./js/vendor/gl-matrix.js" charset="utf-8"></script>
     <script src="./js/vendor/webgl-obj-loader.js" charset="utf-8"></script>
