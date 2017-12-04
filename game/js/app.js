@@ -103,6 +103,7 @@ var app = new Vue({
     centeredScore: 0,
     jauntyScore: 0,
     faceSizeScore: 0,
+    filterScore: 0,
     filteredImgUrl: null
   },
   computed: {
@@ -192,11 +193,13 @@ var app = new Vue({
       filterctx.drawImage(glcan, 0, 0, filtercan.width, filtercan.height);
       this.imgToFilter = new Image();
       this.imgToFilter.src = filtercan.toDataURL(0,0,filtercan.width, filtercan.height);
+      this.filteredImgUrl = filtercan.toDataURL();
     },
 
     selectFilter (filter) {
       let self = this;
       self.selectedFilter = filter;
+      self.filterScore = 100;
       filterctx.drawImage(self.imgToFilter, 0, 0, filtercan.width, filtercan.height);
       if (!self.imgCache[filter.name]) {
         self.imgCache[filter.name] = new Image();
@@ -219,6 +222,7 @@ var app = new Vue({
 
     clearFilter () {
       this.selectedFilter = null;
+      this.filterScore = 0;
       filterctx.drawImage(this.imgToFilter, 0, 0, filtercan.width, filtercan.height);
     },
 
@@ -414,6 +418,7 @@ var app = new Vue({
       this.centeredScore = 0;
       this.jauntyScore = 0;
       this.faceSizeScore = 0;
+      this.filterScore = 0;
     }
 
   }
