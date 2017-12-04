@@ -78,11 +78,13 @@
 
       <div class="score" v-show="activeStep.name === 'score'">
         <div class="step-body">
-          <h2>You did great!</h2>
+          <h2>You did great! Click to download</h2>
+          <a download="selfie.png" :href="filteredImgUrl"><img :src="filteredImgUrl" alt=""></a>
           <ul>
             <li>Composition: {{centeredScore}} points</li>
             <li>Jaunty angles: {{jauntyScore}} points</li>
             <li>Cropping: {{faceSizeScore}} points</li>
+            <li>Accessories: {{maskScore}} points</li>
           </ul>
           <h1>
             <i>Total: {{totalScore}} points</i>

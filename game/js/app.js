@@ -49,6 +49,18 @@ var app = new Vue({
       {
         name: 'senpai',
         url: './img/senpai.png'
+      },
+      {
+        name: 'skull',
+        url: './img/skull.png'
+      },
+      {
+        name: 'sunglasses',
+        url: './img/sunglasses.png'
+      },
+      {
+        name: 'makeup',
+        url: './img/makeup.png'
       }
     ],
     filterOptions: [
@@ -86,14 +98,19 @@ var app = new Vue({
     imgToFilter: null,
     centeredScore: 0,
     jauntyScore: 0,
-    faceSizeScore: 0
+    faceSizeScore: 0,
+    filteredImgUrl: null
   },
   computed: {
+    maskScore () {
+      return this.maskStack.length * 10;
+    },
     totalScore () {
       let scores = [
         this.centeredScore,
         this.jauntyScore,
-        this.faceSizeScore
+        this.faceSizeScore,
+        this.maskScore
       ];
       return scores.reduce((a, b) => {
         return a + b;
@@ -110,6 +127,7 @@ var app = new Vue({
       this.selectedFilter = null;
       this.imgToFilter = null;
       this.clearScores();
+      this.filteredImgUrl = null;
     },
     startEditor () {
       let self = this;
@@ -180,11 +198,13 @@ var app = new Vue({
         self.imgCache[filter.name] = new Image();
         self.imgCache[filter.name].onload = function () {
           filterctx.drawImage(self.imgCache[filter.name], 0, 0, filtercan.width, filtercan.height);
+          self.filteredImgUrl = filtercan.toDataURL();
         }
         self.imgCache[filter.name].src = filter.url;
       }
       else {
         filterctx.drawImage(self.imgCache[filter.name], 0, 0, filtercan.width, filtercan.height);
+        self.filteredImgUrl = filtercan.toDataURL();
       }
     },
 
@@ -378,7 +398,7 @@ var app = new Vue({
     },
 
     getJauntyScore () {
-      this.jauntyScore = Math.abs(90 - 180 * this.midbrow.a / Math.PI) | 0;
+      this.jauntyScore = 10 * Math.abs(90 - 180 * this.midbrow.a / Math.PI) | 0;
     },
 
     getFaceSizeScore () {
