@@ -61,6 +61,10 @@ var app = new Vue({
       {
         name: 'makeup',
         url: './img/makeup.png'
+      },
+      {
+        name: 'third eye',
+        url: './img/thirdeye.png'
       }
     ],
     filterOptions: [
